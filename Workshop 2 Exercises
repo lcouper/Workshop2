@@ -1,0 +1,181 @@
+Workshop 2 Exercises:
+
+1) There is a dataset containing information on UC Berkeley graduate admissions available within base R. 
+View this dataset to get a sense for what it contains. It is called UCBAdmissions
+Note that each row is not a student, but an outcome.
+ 1.1) Suggested: Rename the dataset to something shorter (e.g. ucb) so it's easier to work with 
+ 
+ 1.2) Convert ucb into a data frame (it's currently in table format which is difficult to work with)
+ 
+ 1.3) How many total students applied to UCB this year? (involves finding the sum of a particular column)
+ 
+ 1.4) Create a new variable "Admit" which contains only the students that were admitted this year. Do the same for those rejected
+ Note these new subsetted data frames should be of equal size. Confirm this is true using the "dim" funciton on each new variable
+
+1.5) What proportion of students were admitted this year? (Hint involves again summing a particular column and dividing by a previous answer)
+
+1.6) Looking at just the admitted students, subset the data to have one data frame (or variable) for admitted males and one for admitted females
+
+1.7) Is there any gender bias in these admissions data (I.e. What proportion of the admitted students were male? What proportion were female?)
+
+1.8) Clearly there were more admitted males than females this year. 
+Perhaps this has to do with which department individuals are applying to.
+First check the class of the Department column in the ucb dataset. 
+
+1.9) Lets recode the department factors to be more informative using the following code.
+This will first require installing and loading the "plyr" package.
+Do so either at the command line or using the R Studio tools
+
+1.10) Recode the departments using the following code (I made these up, the real departments weren't provided)
+ucb$Dept = revalue(ucb$Dept, c("A"="Education", "B"="Biology", "C" = "History",
+                               "D" = "Linguistics", "E" = "Math", "F" = "Physics"))
+                               
+1.11) For practice, following the code above to recode the Gender column to rather show "M" for "Male" and "F" for Female
+View the recoded dataset to be sure these changes both worked.
+
+1.12) Let's take a look at the total # of students who applied (admit + reject) to each department by using the following code:
+
+ucbAgg = aggregate(ucb$Freq ~ ucb$Dept, FUN = "sum")
+
+What does the aggregate function do?
+
+
+1.13.1) Challenge: Adapt the code above to look at the number of students who applied based on both department AND admission status
+Save this output into a new variable called "ucb2"
+
+1.13.2) On the above ucb2 dataset, use the colnames function to change the column names of this dataset to:
+"Dept", "Admit", "Freq" respectively.
+
+1.13.3)
+Now subset the ucb2 dataset (i.e. create a new variable) with only the admitted students. CAll this variable "ucb2A"
+
+1.13.4) 
+The "freq" column of the ucb2A dataset now shows the number of admitted students for each department,
+whereas the "freq" column in the ucbAgg dataset shows the total number of students who applied to each department
+Using these two data frames, calculate the percentage of students admitted to each deparment.
+Store this output in a new variable called "PerAdm"
+
+1.13.5) Convert the values in the PerAdm vector to integers using the "as.integer" function
+
+
+
+2) Download and import the "Microbiomedata" csv. Store this data in a new data frame (variable) called "md"
+Make sure when you import the dataset that you indicate that there are both column names AND row names.
+In this dataset, the row names are names of bacteria found in the microbiome (of a tick)
+and the column names are sample identifiers. 
+The values represent the number of sequences attributed to each microbe for that sample
+
+2.1) The sample PW005 was later found to have issues - remove this column and overwrite the original dataset with this change
+
+2.2) What are the sums of each row in this data frame? (hint: you may need to do some googling to find the correct function call)
+
+2.3) Transpose this data frame so that the samples are represeted as rows, and the columns as bacteria.
+Save the transposed data in a new variable called "mdt"
+
+2.4) Check the class of the variable, mdt. What happened?
+Convert it back to a data frame, using the as.data.frame( ) function
+
+2.4) "Rickettsia" is a particuarly important bacteria inside the tick. 
+What is the average abundance (value) of Rickettsia across all ticks?
+
+2.5) Re-arrange the dataset so that the rows are listed in increasing order of Rickettsia abundance (i.e. low to high abundance)
+using the following code (will require having the plyr package loaded which you already did in exercise 1)
+Ricks = arrange(mdt, Rickettsia)
+
+2.6) What is the second most abundant bacteria across all samples after Rickettsia? (Don't count the "Other" column here)
+(There are lots of ways you could do this, but try using the sort function on the column sums)
+
+2.7) Create a new variable called "Samples" which is equal to the rownames of the mdt dataset
+
+2.8) Now create a new data frame (mdt2) that has "Samples" as the first column, and all other columns from mdt after that
+View this dataset. It should look a little weird because the rownames and first column will be identical. 
+You'll see why we did this is the next step though.
+
+2.9) Now convert this mdt2 dataset from wide format to long format using the "melt" function.
+Save the output in a new data frame called "Melted"
+
+2.10) We haven't gotten to plotting yet, 
+but lets create a histogram of this dataset to see the distribution of the "values" using the following code:
+
+hist(Melted$value)
+
+What is this plot showing you? 
+How did "melting" the data frame enable us to create this plot?
+
+
+3) Download and import the "Grades.csv" file.
+This data frame has column names, but not row names. Store this data in a variable called "grades"
+
+3.1) Inspect the class of the "LastName" column. 
+This column should contain character data, not factor data, since there is no hierarchy/ structure to the last names.
+Convert this column to the appropriate class.
+
+3.2) Inspect the class of "ReadingLevel" and "MathLevel"
+Based on your understanding of the dataset, what type of data class should these be?
+Convert these to the class that you think is most appropriate.
+
+3.3) Use the 'str' function on the grades data frame to make sure the above changes went through properly
+
+3.4) View the data frame. What do you notice about the 2nd and 3rd row?
+
+3.5) In this dataset, only one row is a duplicate so it's easy to find and remove. 
+But lets remove it using a method that is scale-able to very large datasets.
+One way to do this is to identify the duplicated rows using the "duplicated" function:
+
+duplicated(grades)
+
+What does the output of this function tell you?
+
+3.6) Now lets remove the duplicated rows using the following code:
+grades[!duplicated(grades),]
+
+What does the '!' operator mean?
+
+3.7) Challenge: Create a new variable called "NoFs" that contains all the rows for students that did NOT get F's. 
+Use the ! operator to help you do this
+
+3.8.1) Use the aggregate function from before to calculate the average number grade for this exam based on the students math level
+Store the output in a new variable called Agg1.
+
+3.8.2) Do the same for the reading level (i.e. calculate avg number grade based on reading level).
+Store this output in a variable called Agg2
+
+3.8.3) We haven't gone over plotting, 
+but run the following code to get a sense of how the students number grade relates to their reading and math level
+plot(Agg1)
+plot(Agg2)
+
+Does it appear that the students grade is related to their reading/math levels?
+
+3.9) Challenge: Of the students who studied 3 hours or more, which student scored the lowest (NumGrade) on the exam?
+Note this is probably a multi-step problem.
+
+3.10) You want to pair up students for an assignment based on how they scored on this exam.
+Specifically you want to pair the lowest-scoring student with the highest-scoring student,
+second-lowest-scoring with the second-highest-scoring, and so forth towards the middle.
+How might you manipulate the grades dataset to help you do this? 
+
+3.11) Challenge: Let's say we don't care to look at reading/ math level as separate variables.
+How could you use the "melt" function to 'melt' these two columns into one and retain all the other columns?
+
+3.12) We now have information about each student's score on the pre-exam.
+Enter the data below (it's already in the correct order) as a new variable called "PreExam"
+Make sure you have the duplicated row removed or else these won't match up
+
+72, 74, 50, 79, 90, 88, 80, 70, 82, 90, 95, 90, 60
+
+3.13) Add "PreExam" as the last column of the data. 
+Save this new variable containing the PreExam and all previous data as an object called "grades2"
+
+3.14) Re-order grades 2 so that the PreExam scores come right after the NumGrade column using the code below:
+grades2 = cbind(grades, PreExam)
+
+3.15) Did students, on average, do better on the pre-exam or the real exam?
+
+3.16) Create a new variable which contains the difference in pre-exam and real exam scores? (i.e NumGrade - PreExam)
+Call this variable: PrePost
+
+3.17) Which student improved the most from pre-exam to actual exam? (i.e who had the largest positive differential?
+
+
+

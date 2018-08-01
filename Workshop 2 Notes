@@ -1,0 +1,105 @@
+Workshop 2 = Data Manipulation
+
+In workshop 1, we covered:
+-- Using functions. function(argument1, argument2, etc). Ex = sample(1:2, 10, replace = TRUE)
+-- installing packages. install.packages("package name"). Or do it using the R studio tools. Then "load" package using library(package name)
+-- importing data. Using 'read' fucntions or R Studio tools. Ex: read.csv("data.csv", header = TRUE, row.names = 1)
+-- Subsetting data (where we'll start today)
+
+1) Subsetting data:
+
+  -- When you know the row or column that you're working with, 
+  you can access it using either the square brackets [ ] , or the $ (for columns only)
+  In the square brackets, list the rows first & columns second
+  Ex:
+    To extract the third column of the iris data set: iris[ ,3]
+    Leaving the "row" argument blank tells R we want all the rows
+  Ex: 
+  Pull out the petal and sepal measurements for the first 10 rows: iris[1:10, 1:4]
+  
+  For columns only: if you know the name of the column, use the $
+  Ex: iris$Species
+  
+  You can then use functions on these subsets either by saving them as a new variable first, or directly
+  mean(iris[,3])
+  PetalLength = iris[,3]
+  mean(PetalLength)
+  
+  
+  -- Based on values in other columns
+  Similar to above, you still tell R which data frame you're working in. 
+  But then instead of passing rows/columns, you pass a logic statement (using ==, >, <=, etc)
+  
+  Ex: Pull out all the "virginica" species
+  iris[iris$Species == "virginica",]
+  
+  Ex: Pull out all species with petal.length greater than or equal to 6.0
+  iris[iris$Petal.Length >= 6.0,]
+  
+  
+2) Adding/ Removing rows & columns
+  Can be important if you are adding more data to your dataset, or later identifying data points you need to remove, etc
+
+  Removing rows: similar strategy to above, but uses the '-'
+  Ex: Remove the 10th row of the dataset
+  iris[-10, ]
+  
+  Ex: Remove the first two columns:
+  iris[ , -c(1,2)]
+  
+  Adding rows: use the rbind (row bind) and cbind (column bind) function 
+  
+  Ex: Add another observation, "Flower 151"
+  Flower151 = c(7.2, 3.0, 6.4, 2.5, "virginica")
+  rbind(iris, Flower151) 
+  
+  
+3) Changing row & column names
+  Access the row/column names using: rownames(data), and colnames(data)
+  Ex: Access row names for the iris data set
+  rownames(iris)
+
+  Ex: change colnames of iris dataset (switch petal width/length)
+  colnames(iris) = c("Sepal.Length", "Sepal.Width", "Petal.Width", "Petal.Length", "Species")
+
+
+4) Data classes
+  R recognizes different data types like character, numeric, factor, integer, logical
+  as well as data structures like data frames &  matrices
+  
+  Briefly: 
+  character = for text
+  numeric = for real numbers
+  integer = for integers
+  logical = for True/False statements
+  factor = for integers/text with some sort of hierarchy
+  
+  data frames = can store different types of data classes
+  matrices = can only hold one type of data class
+  
+  Converting between different classes may be important, as R can sometimes mistake your intention for the data
+  and there are some functions that require data of a certain class
+
+Check data class by using "class" function:
+Ex: class(mtcars$gear)
+
+Convert between different classes using as.___ functions like: as.numeric(), as.character(), as.factor()
+Grades = read.csv("~/Downloads/Grades.csv", header = TRUE)
+Ex. Grades$ReadingLevel = as.factor(Grades$ReadingLevel)
+
+
+5) Data reshaping
+  Getting your data into a format you can use for analysis (aka data reshaping) is very important! (and time-consuming and hard)
+  
+  Some basic things you can do :
+  
+  Transpose your data (i.e. flip the rows and columns) using the 't' function
+  Ex. iris2 = t(iris)
+
+  Convert between wide and long form
+  Using the mtcars dataset which comes with base R. View the dataset using: View(mtcars)
+  library(reshape2)
+  CarsMelt = melt(mtcars)
+  
+  Melt but preserve the gears and cylinder columns (basically saying to classify your data based on the # of gears and cyls)
+  CarMelt2 = melt(mtcars, id.vars = c("gear", "cyl")
